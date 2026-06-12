@@ -5,13 +5,17 @@
   "type": "module",
   "description": "Teammate C - mock buyer agent that auto-pays the x402 paywall to unlock the alpha payload.",
   "scripts": {
-    "buy": "echo \"[buyer] Teammate C: implement buyer_bot here\" && exit 0",
+    "buy": "tsx src/buyer_bot.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@nightcrawler/contracts": "workspace:*"
+    "@nightcrawler/contracts": "workspace:*",
+    "viem": "^2.21.0",
+    "x402-fetch": "^0.3.0"
   },
   "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.2",
     "typescript": "^5.7.2"
   }
 }
