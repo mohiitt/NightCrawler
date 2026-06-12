@@ -57,3 +57,11 @@ Confidence: 86%  Run: `1ea10974-2272-442d-bf25-4a861f9be3a5`
 | AP News | https://example.com/news/trump-beijing-summit | President Trump lands in Beijing for General Trade Summit. |
 | US Dept of Commerce | https://example.com/filings/bis-rfi-ai-export | Request For Information: Export Controls on Advanced AI Accelerators and Semiconductor Chips |
 | Market Data | https://example.com/filings/bis-rfi-ai-export | Spike in put options volume detected for NVDA. |
+
+## 2026-06-12T22:29:15.823Z — Executive flights to Beijing, relevant regulatory filings, and notable NVDA market anomalies point t
+Confidence: 86%  Run: `25074fef-5d4a-43aa-ab2a-1a348140dcb9`
+
+| Source | URL | Quote |
+| --- | --- | --- |
+| Associated Press | https://example.com/news/trump-beijing-summit | President Trump lands in Beijing for General Trade Summit |
+| US Dept of Commerce | https://example.com/filings/bis-rfi-ai-export | Request For Information: Export Controls on Advanced AI Accelerators and Semiconductor Chips |
