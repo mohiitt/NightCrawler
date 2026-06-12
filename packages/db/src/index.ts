@@ -28,6 +28,8 @@ export interface DbClient {
   init(): Promise<void>;
   /** DELETE all rows from all tables. Useful for seeding/testing. */
   reset(): Promise<void>;
+  /** Returns true if the server is reachable. */
+  ping(): Promise<boolean>;
   close(): Promise<void>;
 }
 
@@ -73,6 +75,8 @@ async function createClickHouse(): Promise<DbClient> {
     url,
     username: process.env["CLICKHOUSE_USER"] ?? "default",
     password: process.env["CLICKHOUSE_PASSWORD"] ?? "",
+    // Free-tier ClickHouse Cloud auto-pauses; first request can take >30s to wake.
+    request_timeout: 120_000,
     clickhouse_settings: { wait_for_async_insert: 1 },
   });
 
@@ -111,6 +115,15 @@ async function createClickHouse(): Promise<DbClient> {
     async reset() {
       for (const t of ["flights", "news_and_filings", "market_anomalies"]) {
         await runStatement(`TRUNCATE TABLE IF EXISTS ${t}`);
+      }
+    },
+
+    async ping() {
+      try {
+        await client.ping();
+        return true;
+      } catch {
+        return false;
       }
     },
 
@@ -165,6 +178,8 @@ async function createSqlite(): Promise<DbClient> {
     async reset() {
       db.exec("DELETE FROM flights; DELETE FROM news_and_filings; DELETE FROM market_anomalies;");
     },
+
+    async ping() { return true; },
 
     async close() {
       db.close();
