@@ -7,7 +7,7 @@
 export const TABLES = ["flights", "news_and_filings", "market_anomalies"] as const;
 export type TableName = (typeof TABLES)[number];
 
-export interface FlightRow {
+export interface FlightRow extends Record<string, unknown> {
   id: string;
   tail_number: string;
   owner_entity: string;
@@ -15,7 +15,7 @@ export interface FlightRow {
   timestamp: string;
 }
 
-export interface NewsRow {
+export interface NewsRow extends Record<string, unknown> {
   id: string;
   source: string;
   headline: string;
@@ -24,7 +24,7 @@ export interface NewsRow {
   timestamp: string;
 }
 
-export interface MarketAnomalyRow {
+export interface MarketAnomalyRow extends Record<string, unknown> {
   id: string;
   ticker: string;
   anomaly_type: string;

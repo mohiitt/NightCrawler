@@ -5,7 +5,10 @@
   "type": "module",
   "description": "Teammate A - DB schema bootstrap, seed_db (Golden Path), optional Airbyte sync.",
   "scripts": {
-    "seed": "echo \"[ingest] Teammate A: implement seed_db here\" && exit 0",
+    "seed": "tsx src/seed_db.ts",
+    "seed:reset": "RESET=true tsx src/seed_db.ts",
+    "verify": "tsx src/verify_db.ts",
+    "airbyte:demo": "tsx src/airbyte_demo.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -16,6 +19,7 @@
   },
   "devDependencies": {
     "@types/uuid": "^10.0.0",
+    "tsx": "^4.19.2",
     "typescript": "^5.7.2"
   }
 }
