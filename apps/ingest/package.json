@@ -9,6 +9,7 @@
     "seed": "node --env-file=../../.env --import tsx/esm src/seed_db.ts",
     "seed:reset": "RESET=true node --env-file=../../.env --import tsx/esm src/seed_db.ts",
     "verify": "node --env-file=../../.env --import tsx/esm src/verify_db.ts",
+    "airbyte": "node --env-file=../../.env --import tsx/esm src/airbyte_demo.ts",
     "airbyte:demo": "node --env-file=../../.env --import tsx/esm src/airbyte_demo.ts",
     "typecheck": "tsc --noEmit"
   },
