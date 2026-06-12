@@ -315,9 +315,20 @@ export async function runAgent(run: Run): Promise<void> {
 
     messages.push(msg);
 
-    // No more tool calls → agent is done
+    // No more tool calls
     if (!msg.tool_calls || msg.tool_calls.length === 0) {
-      console.log("[agent] Agent finished without calling synthesize_signal. Content:", msg.content?.slice(0, 200));
+      if (!synthesizedSignal && iter < 22) {
+        // Agent stopped early — nudge it back to Phase 3
+        console.log("[agent] Agent paused without synthesizing — nudging to complete Phase 3.");
+        messages.push({
+          role: "user",
+          content:
+            "You have not yet called synthesize_signal. The corroboration protocol is incomplete. " +
+            "Proceed immediately to Phase 3: emit_status, emit the synthesis node, emit_edge for every evidence node → synthesis node, then call synthesize_signal.",
+        });
+        continue;
+      }
+      console.log("[agent] Agent finished. Content:", msg.content?.slice(0, 200));
       break;
     }
 

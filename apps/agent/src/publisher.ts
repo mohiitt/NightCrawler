@@ -74,7 +74,15 @@ async function tryComposio(signal: Signal, runId: string): Promise<boolean> {
     console.log("[publisher] ✓ Composio GitHub commit:", JSON.stringify(result).slice(0, 200));
     return true;
   } catch (err) {
-    console.warn("[publisher] Composio failed:", (err as Error).message?.slice(0, 150));
+    let msg: string;
+    if (err instanceof Error) {
+      msg = err.message;
+    } else if (err && typeof err === "object") {
+      msg = JSON.stringify(err).slice(0, 300);
+    } else {
+      msg = String(err);
+    }
+    console.warn("[publisher] Composio failed:", msg.slice(0, 300));
     return false;
   }
 }
