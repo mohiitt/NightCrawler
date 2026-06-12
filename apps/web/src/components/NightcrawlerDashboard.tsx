@@ -11,13 +11,21 @@ import {
   dashboardReducer,
   initialRunState,
 } from "@/lib/runState";
+import { AirbyteSyncBanner } from "./AirbyteSyncBanner";
+import { AlphaPanel } from "./AlphaPanel";
 import { ApprovalGate } from "./ApprovalGate";
 import { ConspiracyBoardView } from "./ConspiracyBoard/ConspiracyBoardView";
+import { HighConvictionSignal } from "./HighConvictionSignal";
+import { HistoricalProofPanel } from "./HistoricalProofPanel";
+import { IntroSplash } from "./IntroSplash";
 import { SignalSummary } from "./SignalSummary";
+import { SponsorStrip } from "./SponsorStrip";
 import { StatusBar } from "./StatusBar";
-import { AlphaPanel } from "./AlphaPanel";
+import { TradeReveal } from "./TradeReveal";
 
 export function NightcrawlerDashboard() {
+  const [showIntro, setShowIntro] = useState(true);
+  const [airbyteActive, setAirbyteActive] = useState(false);
   const [state, dispatch] = useReducer(dashboardReducer, initialRunState);
   const [starting, setStarting] = useState(false);
   const [approving, setApproving] = useState(false);
@@ -60,7 +68,7 @@ export function NightcrawlerDashboard() {
     [closeStream]
   );
 
-  const startRun = async () => {
+  const startRun = useCallback(async () => {
     setStarting(true);
     try {
       const res = await fetch(API_ROUTES.run, {
@@ -82,6 +90,12 @@ export function NightcrawlerDashboard() {
     } finally {
       setStarting(false);
     }
+  }, [connectStream]);
+
+  const handleLaunch = () => {
+    setShowIntro(false);
+    setAirbyteActive(true);
+    void startRun();
   };
 
   const handleApprove = async (approved: boolean) => {
@@ -108,7 +122,10 @@ export function NightcrawlerDashboard() {
       } else {
         dispatch({
           type: "status",
-          payload: { message: "Approved — publishing signal…", progress: 0.9 },
+          payload: {
+            message: "Approved — Composio publishing to cited.md…",
+            progress: 0.92,
+          },
         });
       }
     } catch (error) {
@@ -123,39 +140,57 @@ export function NightcrawlerDashboard() {
     }
   };
 
+  if (showIntro) {
+    return <IntroSplash onLaunch={handleLaunch} launching={starting} />;
+  }
+
   const boardProps = boardPropsFromState(state);
   const canStart =
     state.phase === "idle" ||
     state.phase === "complete" ||
     state.phase === "error";
+  const showConviction =
+    Boolean(state.signal) && (state.signal?.confidence ?? 0) >= 0.85;
+  const showTrade = Boolean(state.signal);
+  const showHistorical = state.phase === "complete" && state.published;
 
   return (
     <div className="dashboard">
       <header className="dashboard-header">
         <div>
           <div className="brand">NIGHTCRAWLER</div>
-          <div className="tagline">Autonomous OSINT &amp; Alpha Broker</div>
+          <div className="tagline">OpenUI Lang · ClickHouse OLAP · Guild-governed alpha broker</div>
         </div>
         <button
           className="btn-primary"
           onClick={startRun}
           disabled={starting || !canStart}
         >
-          {starting ? "Starting…" : canStart ? "Start Run" : "Run Active"}
+          {starting ? "Starting…" : canStart ? "New Run" : "Run Active"}
         </button>
       </header>
+
+      <SponsorStrip />
+      <AirbyteSyncBanner active={airbyteActive} onComplete={() => setAirbyteActive(false)} />
+
+      <HighConvictionSignal
+        confidence={state.signal?.confidence ?? 0}
+        visible={showConviction}
+      />
 
       <div className="dashboard-grid">
         <aside className="sidebar">
           <StatusBar state={state} />
+          <TradeReveal visible={showTrade} locked={state.phase !== "complete"} />
           <div className="panel">
             <SignalSummary signal={state.signal} />
           </div>
           <AlphaPanel runId={state.runId} phase={state.phase} />
+          <HistoricalProofPanel visible={showHistorical} />
         </aside>
 
         <main className="board-panel">
-          <ConspiracyBoardView {...boardProps} />
+          <ConspiracyBoardView {...boardProps} streaming={state.phase === "running"} />
         </main>
       </div>
 

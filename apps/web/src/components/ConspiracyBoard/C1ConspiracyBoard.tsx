@@ -9,6 +9,8 @@ import { ConspiracyBoard } from "./ConspiracyBoard";
  *   pnpm --filter @nightcrawler/web add @thesysai/genui-sdk @crayonai/react-ui
  * Set NEXT_PUBLIC_USE_C1=true in .env.local
  */
-export function C1ConspiracyBoard(props: ConspiracyBoardProps) {
+export function C1ConspiracyBoard(
+  props: ConspiracyBoardProps & { streaming?: boolean }
+) {
   return <ConspiracyBoard {...props} />;
 }

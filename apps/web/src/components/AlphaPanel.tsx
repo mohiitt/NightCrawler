@@ -11,19 +11,21 @@ type Props = {
 
 export function AlphaPanel({ runId, phase }: Props) {
   const [alpha, setAlpha] = useState<AlphaResponse["alpha"] | null>(null);
-  const [status, setStatus] = useState<string>("Locked behind x402 paywall");
+  const [status, setStatus] = useState<string>(
+    "Locked behind Coinbase CDP / x402 paywall ($0.05 USDC)"
+  );
   const [loading, setLoading] = useState(false);
 
   const unlockDev = async () => {
     if (!runId) return;
     setLoading(true);
-    setStatus("Fetching alpha…");
+    setStatus("Buyer bot negotiating x402 payment…");
     try {
       const res = await fetch(
         `${API_ROUTES.alpha}?runId=${encodeURIComponent(runId)}`
       );
       if (res.status === 402) {
-        setStatus("402 Payment Required — run buyer bot to unlock");
+        setStatus("402 Payment Required — run buyer bot in terminal");
         return;
       }
       if (!res.ok) {
@@ -31,7 +33,7 @@ export function AlphaPanel({ runId, phase }: Props) {
       }
       const body = (await res.json()) as AlphaResponse;
       setAlpha(body.alpha);
-      setStatus("Alpha unlocked");
+      setStatus("Alpha unlocked — machine paid for intelligence");
     } catch (error) {
       setStatus(error instanceof Error ? error.message : "Unlock failed");
     } finally {
@@ -43,7 +45,7 @@ export function AlphaPanel({ runId, phase }: Props) {
 
   return (
     <div className="panel alpha-panel">
-      <h3 className="panel-title">ALPHA PAYLOAD</h3>
+      <h3 className="panel-title">ALPHA PAYLOAD (x402)</h3>
       <p className="alpha-status">{status}</p>
       {alpha ? (
         <div className="alpha-body">
@@ -66,11 +68,14 @@ export function AlphaPanel({ runId, phase }: Props) {
           onClick={unlockDev}
           disabled={!ready || loading}
         >
-          {loading ? "Checking…" : "Try unlock (dev / no wallet)"}
+          {loading ? "Checking…" : "Simulate buyer unlock (dev)"}
         </button>
       )}
       <p className="alpha-hint">
-        Production unlock: <code>pnpm --filter @nightcrawler/buyer buy</code>
+        Demo:{" "}
+        <code>
+          RUN_ID=&lt;id&gt; pnpm --filter @nightcrawler/buyer buy
+        </code>
       </p>
     </div>
   );

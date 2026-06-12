@@ -14,14 +14,15 @@ const C1ConspiracyBoard = dynamic(
   }
 );
 
-type Props = ConspiracyBoardProps;
+type Props = ConspiracyBoardProps & { streaming?: boolean };
 
 export function ConspiracyBoardView(props: Props) {
+  const { streaming, ...boardProps } = props;
   const useC1 = process.env.NEXT_PUBLIC_USE_C1 === "true";
 
   if (useC1) {
-    return <C1ConspiracyBoard {...props} />;
+    return <C1ConspiracyBoard {...boardProps} streaming={streaming} />;
   }
 
-  return <ConspiracyBoard {...props} />;
+  return <ConspiracyBoard {...boardProps} streaming={streaming} />;
 }

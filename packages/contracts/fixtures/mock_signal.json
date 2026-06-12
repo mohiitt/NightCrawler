@@ -1,5 +1,5 @@
 {
-  "thesis": "An unannounced US AI-chip export ban is being negotiated. Intel and Apple leadership flew to Beijing for the trade summit while Nvidia's CEO conspicuously stayed home, corroborated by an obscure Commerce Dept RFI on advanced AI chips and an anomalous spike in NVDA put-option volume.",
+  "thesis": "An unannounced US semiconductor export ban is being negotiated. Intel and Apple leadership flew to Beijing while Nvidia and AMD CEOs conspicuously stayed home, corroborated by a Commerce Dept RFI and anomalous NVDA put-option volume.",
   "confidence": 0.86,
   "nodes": [
     {
@@ -35,6 +35,14 @@
       "confidence": 0.8
     },
     {
+      "id": "n_flight_amd",
+      "kind": "flight",
+      "label": "Lisa Su (AMD) stayed home",
+      "detail": "AMD executive jet remained in Texas. Notable absence alongside Nvidia.",
+      "sourceUrl": "https://example.com/flights/NAMD01",
+      "confidence": 0.78
+    },
+    {
       "id": "n_filing_rfi",
       "kind": "filing",
       "label": "Commerce Dept AI-chip RFI",
@@ -53,8 +61,8 @@
     {
       "id": "n_synthesis",
       "kind": "synthesis",
-      "label": "High-confidence signal",
-      "detail": "Three independent vectors converge: physical (flights), regulatory (RFI), and financial (options). Mosaic Theory satisfied.",
+      "label": "HIGH CONVICTION SIGNAL",
+      "detail": "Three independent vectors converge. Proposed trade: SHORT NVDA, SHORT AMD, LONG INTC.",
       "confidence": 0.86
     }
   ],
@@ -62,9 +70,10 @@
     { "id": "e1", "source": "n_news_summit", "target": "n_flight_aapl", "label": "context" },
     { "id": "e2", "source": "n_news_summit", "target": "n_flight_intc", "label": "context" },
     { "id": "e3", "source": "n_flight_nvda", "target": "n_synthesis", "label": "anomaly: absence" },
-    { "id": "e4", "source": "n_flight_intc", "target": "n_synthesis", "label": "anomaly: present" },
-    { "id": "e5", "source": "n_filing_rfi", "target": "n_synthesis", "label": "corroborates" },
-    { "id": "e6", "source": "n_market_nvda", "target": "n_synthesis", "label": "corroborates" }
+    { "id": "e4", "source": "n_flight_amd", "target": "n_synthesis", "label": "anomaly: absence" },
+    { "id": "e5", "source": "n_flight_intc", "target": "n_synthesis", "label": "anomaly: present" },
+    { "id": "e6", "source": "n_filing_rfi", "target": "n_synthesis", "label": "corroborates" },
+    { "id": "e7", "source": "n_market_nvda", "target": "n_synthesis", "label": "corroborates" }
   ],
   "citations": [
     {
@@ -84,11 +93,12 @@
     }
   ],
   "alpha": {
-    "action": "Position ahead of an expected AI-chip export ban announcement.",
+    "action": "Position ahead of an expected semiconductor export ban announcement.",
     "tickers": [
       { "ticker": "NVDA", "direction": "SHORT" },
+      { "ticker": "AMD", "direction": "SHORT" },
       { "ticker": "INTC", "direction": "LONG" }
     ],
-    "rationale": "Export restrictions disproportionately hit Nvidia's China revenue (data-center GPUs) while Intel's diversified/foundry posture and Beijing presence suggest relative insulation."
+    "rationale": "Export restrictions hit GPU-heavy Nvidia and AMD China exposure while Intel's Beijing presence and foundry diversification suggest relative insulation."
   }
 }

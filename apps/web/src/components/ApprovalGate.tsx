@@ -38,9 +38,15 @@ export function ApprovalGate({
         }}
       >
         <div style={{ color: "#f5a623", fontSize: 12, letterSpacing: "0.1em", marginBottom: 8 }}>
-          GUILD APPROVAL REQUIRED
+          GUILD.AI APPROVAL GATE
         </div>
-        <h2 style={{ fontSize: 18, marginBottom: 12 }}>Publish market-moving intelligence?</h2>
+        <h2 style={{ fontSize: 18, marginBottom: 12 }}>
+          Publish market-moving intelligence?
+        </h2>
+        <p style={{ color: "#aaa", fontSize: 12, marginBottom: 8 }}>
+          The agent is physically incapable of publishing without human approval.
+          Langfuse trace should confirm Mosaic Theory compliance before you approve.
+        </p>
         <p style={{ color: "#aaa", fontSize: 13, lineHeight: 1.6, marginBottom: 16 }}>{reason}</p>
         {approvalRef && (
           <p style={{ fontSize: 11, color: "#666", marginBottom: 16 }}>
@@ -61,7 +67,7 @@ export function ApprovalGate({
               fontWeight: 700,
             }}
           >
-            {loading ? "Approving…" : "Approve & Publish"}
+            {loading ? "Approving…" : "Approve & Publish (Composio → cited.md)"}
           </button>
           <button
             onClick={onReject}

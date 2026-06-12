@@ -186,3 +186,227 @@ a {
 code {
   font-size: 10px;
 }
+
+/* ── Demo: intro splash ── */
+.intro-splash {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 24px;
+  background: var(--bg);
+}
+
+.intro-logo {
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+}
+
+.intro-logo.pulse {
+  animation: logo-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes logo-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+    text-shadow: 0 0 20px rgba(124, 92, 255, 0.3);
+  }
+  50% {
+    opacity: 1;
+    text-shadow: 0 0 40px rgba(124, 92, 255, 0.7);
+  }
+}
+
+.intro-tagline {
+  max-width: 520px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.intro-launch {
+  margin-top: 12px;
+  padding: 14px 28px;
+  font-size: 13px;
+}
+
+.intro-hint {
+  font-size: 10px;
+  color: #555;
+}
+
+/* ── Sponsor strip ── */
+.sponsor-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--border);
+  background: #0e0e14;
+}
+
+.sponsor-pill {
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--muted);
+}
+
+/* ── Airbyte sync banner ── */
+.airbyte-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: linear-gradient(90deg, #0e1a2e, #12121a);
+  border-bottom: 1px solid #1e3a5f;
+  font-size: 11px;
+}
+
+.airbyte-badge {
+  color: #4a9eff;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.airbyte-step {
+  flex: 1;
+  color: var(--text);
+}
+
+.airbyte-progress {
+  color: var(--muted);
+}
+
+/* ── High conviction ── */
+.high-conviction {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 10px;
+  background: rgba(255, 92, 122, 0.12);
+  border-bottom: 2px solid var(--danger);
+  animation: conviction-flash 1.2s ease-in-out infinite;
+}
+
+.high-conviction-label {
+  color: var(--danger);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  font-size: 12px;
+}
+
+.high-conviction-pct {
+  color: #ffb3c0;
+  font-size: 11px;
+}
+
+@keyframes conviction-flash {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.75;
+  }
+}
+
+/* ── Trade reveal ── */
+.trade-reveal {
+  padding-bottom: 12px;
+}
+
+.trade-thesis {
+  padding: 0 16px 8px;
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.trade-tickers {
+  list-style: none;
+  padding: 0 16px 8px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.trade-tickers .long {
+  color: var(--success);
+}
+
+.trade-tickers .short {
+  color: var(--danger);
+}
+
+.trade-locked {
+  padding: 0 16px;
+  font-size: 10px;
+  color: #666;
+}
+
+/* ── Historical proof ── */
+.historical-proof {
+  padding-bottom: 12px;
+}
+
+.historical-caption {
+  padding: 0 16px 12px;
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.historical-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 0 16px 12px;
+  height: 80px;
+}
+
+.chart-bar {
+  flex: 1;
+  border-radius: 4px 4px 0 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 4px;
+  font-size: 8px;
+  color: #000;
+  font-weight: 700;
+}
+
+.chart-signal {
+  height: 55%;
+  background: var(--danger);
+}
+
+.chart-gap {
+  align-self: center;
+  font-size: 9px;
+  color: var(--muted);
+}
+
+.chart-release {
+  height: 70%;
+  background: var(--warning);
+}
+
+.chart-bleed {
+  height: 100%;
+  background: var(--accent);
+  color: #fff;
+}
+
+.stream-dot {
+  animation: logo-pulse 1.5s ease-in-out infinite;
+}

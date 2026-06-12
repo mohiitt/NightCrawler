@@ -95,7 +95,8 @@ export function ConspiracyBoard({
   confidence,
   nodes,
   edges,
-}: ConspiracyBoardProps) {
+  streaming = false,
+}: ConspiracyBoardProps & { streaming?: boolean }) {
   const flowNodes = useMemo(() => layoutNodes(nodes), [nodes]);
   const flowEdges = useMemo(() => layoutEdges(edges), [edges]);
 
@@ -110,7 +111,14 @@ export function ConspiracyBoard({
           background: "#0e0e16",
         }}
       >
-        <div style={{ fontSize: 11, color: "#7c5cff", letterSpacing: "0.1em" }}>{title}</div>
+        <div style={{ fontSize: 11, color: "#7c5cff", letterSpacing: "0.1em" }}>
+          OpenUI Lang · {title}
+          {streaming && (
+            <span style={{ marginLeft: 8, color: "#3dd68c" }} className="stream-dot">
+              ● streaming
+            </span>
+          )}
+        </div>
         <div style={{ fontSize: 13, marginTop: 4, color: "#ccc", lineHeight: 1.5 }}>{thesis}</div>
         {confidence > 0 && (
           <div style={{ marginTop: 8, fontSize: 11, color: "#888" }}>

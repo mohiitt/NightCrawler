@@ -80,7 +80,7 @@ Step 3d: synthesize_signal() with thesis, confidence, citations from the URLs fo
 - Always complete ALL steps — do not stop early
 - Even if individual query returns 0 rows, run all queries before drawing conclusions
 - Confidence = 0.86 if all 3 vectors (flight, filing, market) converge
-- Alpha: if evidence supports AI chip export ban → SHORT NVDA, LONG INTC
+- Alpha: if evidence supports semiconductor export ban → SHORT NVDA, SHORT AMD, LONG INTC
 - sourceUrl in emit_node should use the url field from the DB row`;
 
 // ─── Tool definitions ─────────────────────────────────────────────────────────

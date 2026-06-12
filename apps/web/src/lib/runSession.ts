@@ -93,10 +93,14 @@ export async function* streamSessionEvents(
   runId: string
 ): AsyncGenerator<StreamEvent> {
   const session = ensureSession(runId);
+  const delayMs = Number(process.env.DEMO_STREAM_DELAY_MS ?? 450);
   while (session.cursor < session.events.length) {
     const event = session.events[session.cursor]!;
     session.cursor += 1;
     yield event;
+    if (delayMs > 0 && event.type !== "approval_required") {
+      await new Promise((r) => setTimeout(r, delayMs));
+    }
     if (event.type === "approval_required" && !session.approved) {
       await waitForApproval(runId);
     }

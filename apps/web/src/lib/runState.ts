@@ -96,7 +96,7 @@ export function runReducer(state: RunState, event: StreamEvent): RunState {
         published: event.payload.published,
         progress: 1,
         statusMessage: event.payload.published
-          ? "Signal published to cited.md"
+          ? "Signal published to cited.md via Composio"
           : "Run complete",
       };
     case "error":
@@ -113,8 +113,8 @@ export function runReducer(state: RunState, event: StreamEvent): RunState {
 
 export function boardPropsFromState(state: RunState) {
   return {
-    title: "NIGHTCRAWLER Conspiracy Board",
-    thesis: state.signal?.thesis ?? "Analyzing open-web intelligence…",
+    title: "Conspiracy Board",
+    thesis: state.signal?.thesis ?? "OpenUI streaming deductive reasoning…",
     confidence: state.signal?.confidence ?? 0,
     nodes: state.nodes,
     edges: state.edges,
