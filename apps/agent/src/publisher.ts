@@ -25,75 +25,111 @@ function formatCitedEntry(signal: Signal, runId: string): string {
   );
 }
 
-async function tryComposio(signal: Signal, runId: string): Promise<boolean> {
+/**
+ * Path 1 (preferred): GitHub REST API directly using a PAT.
+ * Add GITHUB_TOKEN=ghp_... to .env to enable this path.
+ */
+async function tryGitHubDirect(newContent: string, runId: string): Promise<boolean> {
+  const token = process.env["GITHUB_TOKEN"];
+  if (!token) return false;
+
+  const owner = process.env["GITHUB_OWNER"] ?? "mohiitt";
+  const repo = process.env["GITHUB_REPO"] ?? "NightCrawler";
+  const path = "cited.md";
+
+  console.log(`[publisher] GitHub API → ${owner}/${repo}/${path}`);
+
+  try {
+    // Get current SHA (required for updates)
+    const getResp = await fetch(
+      `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
+      { headers: { Authorization: `Bearer ${token}`, "User-Agent": "NIGHTCRAWLER" } }
+    );
+    const existing = getResp.ok ? await getResp.json() as { sha: string } : null;
+
+    const putResp = await fetch(
+      `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          "User-Agent": "NIGHTCRAWLER",
+        },
+        body: JSON.stringify({
+          message: `feat: NIGHTCRAWLER publishes citations (run ${runId.slice(0, 8)})`,
+          content: Buffer.from(newContent).toString("base64"),
+          ...(existing ? { sha: existing.sha } : {}),
+          committer: { name: "NIGHTCRAWLER", email: "nightcrawler@osint.ai" },
+        }),
+      }
+    );
+
+    if (!putResp.ok) {
+      const err = await putResp.json() as Record<string, unknown>;
+      throw new Error(`HTTP ${putResp.status}: ${JSON.stringify(err).slice(0, 200)}`);
+    }
+
+    console.log(`[publisher] ✓ GitHub commit via PAT (run ${runId.slice(0, 8)})`);
+    return true;
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : JSON.stringify(err);
+    console.warn("[publisher] GitHub direct failed:", msg.slice(0, 200));
+    return false;
+  }
+}
+
+/**
+ * Path 2: Composio — uses the connected GitHub OAuth account (no PAT needed).
+ * Uses the SDK's Entity.execute which handles auth automatically.
+ */
+async function tryComposio(newContent: string, runId: string): Promise<boolean> {
   const apiKey = process.env["COMPOSIO_API_KEY"];
   if (!apiKey) return false;
+
+  const owner = process.env["GITHUB_OWNER"] ?? "mohiitt";
+  const repo = process.env["GITHUB_REPO"] ?? "NightCrawler";
+
+  console.log(`[publisher] Composio → GitHub ${owner}/${repo} cited.md`);
 
   try {
     const { Composio } = await import("composio-core");
     const client = new Composio({ apiKey });
+    const entity = client.getEntity("default");
 
-    const entry = formatCitedEntry(signal, runId);
-    const currentContent = existsSync(CITED_MD) ? readFileSync(CITED_MD, "utf8") : "";
-    const newContent = currentContent + entry;
-
-    const owner = process.env["GITHUB_OWNER"] ?? "mohiitt";
-    const repo = process.env["GITHUB_REPO"] ?? "NightCrawler";
-
-    console.log(`[publisher] Composio → GitHub ${owner}/${repo} cited.md`);
-
-    // GITHUB_COMMIT_MULTIPLE_FILES: atomic upsert, no SHA needed
-    const result = await client.actions.execute({
+    const result = await entity.execute({
       actionName: "GITHUB_COMMIT_MULTIPLE_FILES",
-      requestBody: {
-        input: {
-          owner,
-          repo,
-          branch: "main",
-          message: `feat: NIGHTCRAWLER publishes citations (run ${runId.slice(0, 8)})`,
-          upserts: [
-            {
-              path: "cited.md",
-              content: newContent,
-              encoding: "utf-8",
-            },
-          ],
-          committer: {
-            name: "NIGHTCRAWLER",
-            email: "nightcrawler@osint.ai",
-          },
-        },
+      params: {
+        owner,
+        repo,
+        branch: "main",
+        message: `feat: NIGHTCRAWLER publishes citations (run ${runId.slice(0, 8)})`,
+        upserts: [{ path: "cited.md", content: newContent, encoding: "utf-8" }],
+        committer: { name: "NIGHTCRAWLER", email: "nightcrawler@osint.ai" },
       },
-    } as Parameters<typeof client.actions.execute>[0]);
-
-    const res = result as { data?: { success?: boolean } };
-    if (res?.data?.success === false) {
-      throw new Error(`Composio action returned success=false: ${JSON.stringify(result)}`);
-    }
+    });
 
     console.log("[publisher] ✓ Composio GitHub commit:", JSON.stringify(result).slice(0, 200));
     return true;
   } catch (err) {
-    let msg: string;
-    if (err instanceof Error) {
-      msg = err.message;
-    } else if (err && typeof err === "object") {
-      msg = JSON.stringify(err).slice(0, 300);
-    } else {
-      msg = String(err);
-    }
-    console.warn("[publisher] Composio failed:", msg.slice(0, 300));
+    const msg = err instanceof Error ? err.message : JSON.stringify(err);
+    console.warn("[publisher] Composio failed:", msg.slice(0, 200));
     return false;
   }
 }
 
 export async function publishCitations(signal: Signal, runId: string): Promise<void> {
   const entry = formatCitedEntry(signal, runId);
+  const currentContent = existsSync(CITED_MD) ? readFileSync(CITED_MD, "utf8") : "";
+  const newContent = currentContent + entry;
 
-  // Try Composio first (creates a real GitHub commit)
-  const composioOk = await tryComposio(signal, runId);
+  // Path 1: GitHub PAT (fastest, most reliable — add GITHUB_TOKEN to .env)
+  const githubOk = await tryGitHubDirect(newContent, runId);
 
-  // Always write locally too — cited.md in the working tree is always fresh
+  // Path 2: Composio OAuth (if GITHUB_TOKEN not set)
+  const composioOk = !githubOk && await tryComposio(newContent, runId);
+
+  // Always also write locally — cited.md is always fresh for the demo
   try {
     appendFileSync(CITED_MD, entry, "utf8");
     console.log(`[publisher] ✓ Appended to local ${CITED_MD}`);
@@ -101,9 +137,7 @@ export async function publishCitations(signal: Signal, runId: string): Promise<v
     console.error("[publisher] Local file write failed:", err);
   }
 
-  if (composioOk) {
-    console.log("[publisher] ✓ cited.md committed to GitHub via Composio");
-  } else {
-    console.log("[publisher] ℹ cited.md updated locally. Connect GitHub in Composio dashboard for auto-commits.");
+  if (!githubOk && !composioOk) {
+    console.log("[publisher] ℹ Add GITHUB_TOKEN=ghp_... to .env for auto-commits to GitHub.");
   }
 }

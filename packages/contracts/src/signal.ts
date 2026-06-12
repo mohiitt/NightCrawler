@@ -22,7 +22,7 @@ export const conspiracyNodeSchema = z.object({
   kind: conspiracyNodeKind,
   label: z.string(),
   detail: z.string(),
-  sourceUrl: z.union([z.string().url(), z.literal("")]).optional(),
+  sourceUrl: z.union([z.string().url(), z.literal(""), z.null()]).nullish(),
   /** 0..1 model confidence for this individual evidence node. */
   confidence: z.number().min(0).max(1).optional(),
 });

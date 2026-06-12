@@ -7,7 +7,7 @@ import type {
 import { agentServiceUrl } from "./paths";
 
 export async function proxyRun(body: RunRequest): Promise<RunResponse> {
-  const res = await fetch(`${agentServiceUrl()}/run`, {
+  const res = await fetch(`${agentServiceUrl()}/api/run`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
@@ -21,7 +21,7 @@ export async function proxyRun(body: RunRequest): Promise<RunResponse> {
 export async function proxyApprove(
   body: ApproveRequest
 ): Promise<ApproveResponse> {
-  const res = await fetch(`${agentServiceUrl()}/approve`, {
+  const res = await fetch(`${agentServiceUrl()}/api/approve`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
@@ -33,5 +33,9 @@ export async function proxyApprove(
 }
 
 export function agentStreamUrl(runId: string): string {
-  return `${agentServiceUrl()}/stream?runId=${encodeURIComponent(runId)}`;
+  return `${agentServiceUrl()}/api/stream?runId=${encodeURIComponent(runId)}`;
+}
+
+export function agentAlphaUrl(runId: string): string {
+  return `${agentServiceUrl()}/api/alpha?runId=${encodeURIComponent(runId)}`;
 }

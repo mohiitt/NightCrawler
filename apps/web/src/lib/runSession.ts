@@ -18,9 +18,9 @@ function loadMockEvents(runId: string): StreamEvent[] {
   const raw = readFileSync(MOCK_EVENTS_PATH, "utf-8");
   return raw
     .split("\n")
-    .map((line) => line.trim())
+    .map((line: string) => line.trim())
     .filter(Boolean)
-    .map((line) => {
+    .map((line: string) => {
       const parsed = JSON.parse(line) as StreamEvent;
       if (parsed.type === "approval_required") {
         return {
@@ -36,7 +36,7 @@ function loadMockEvents(runId: string): StreamEvent[] {
       }
       return parsed;
     })
-    .map((event) => streamEventSchema.parse(event));
+    .map((event: StreamEvent) => streamEventSchema.parse(event));
 }
 
 function loadMockSignal(): Signal {
