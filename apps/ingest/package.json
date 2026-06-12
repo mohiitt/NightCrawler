@@ -1,0 +1,21 @@
+{
+  "name": "@nightcrawler/ingest",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Teammate A - DB schema bootstrap, seed_db (Golden Path), optional Airbyte sync.",
+  "scripts": {
+    "seed": "echo \"[ingest] Teammate A: implement seed_db here\" && exit 0",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@nightcrawler/contracts": "workspace:*",
+    "@nightcrawler/db": "workspace:*",
+    "@faker-js/faker": "^9.3.0",
+    "uuid": "^11.0.3"
+  },
+  "devDependencies": {
+    "@types/uuid": "^10.0.0",
+    "typescript": "^5.7.2"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "@nightcrawler/web",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Teammate C - Next.js UI: ConspiracyBoard via Thesys C1/OpenUI, SSE consumer, x402-gated /api/alpha.",
+  "scripts": {
+    "dev": "echo \"[web] Teammate C: scaffold Next.js App Router here (next dev)\" && exit 0",
+    "typecheck": "echo \"[web] scaffold Next.js first (pnpm create next-app), then enable tsc\""
+  },
+  "dependencies": {
+    "@nightcrawler/contracts": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  }
+}

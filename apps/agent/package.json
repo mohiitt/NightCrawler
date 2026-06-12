@@ -1,0 +1,19 @@
+{
+  "name": "@nightcrawler/agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Teammate B - Guild.ai agent, corroboration loop, approval gate, Langfuse, Composio publish, run/stream service.",
+  "scripts": {
+    "dev": "echo \"[agent] Teammate B: implement run/stream service here\" && exit 0",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@nightcrawler/contracts": "workspace:*",
+    "@nightcrawler/db": "workspace:*",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  }
+}

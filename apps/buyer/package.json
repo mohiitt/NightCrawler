@@ -1,0 +1,17 @@
+{
+  "name": "@nightcrawler/buyer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Teammate C - mock buyer agent that auto-pays the x402 paywall to unlock the alpha payload.",
+  "scripts": {
+    "buy": "echo \"[buyer] Teammate C: implement buyer_bot here\" && exit 0",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@nightcrawler/contracts": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  }
+}
