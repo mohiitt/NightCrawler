@@ -11,7 +11,12 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@crayonai/react-core": "~0.7.7",
+    "@crayonai/react-ui": "~0.9.16",
     "@nightcrawler/contracts": "workspace:*",
+    "@radix-ui/react-dialog": "^1.1.15",
+    "@thesysai/genui-sdk": "~0.9.0",
+    "lucide-react": "^0.562.0",
     "next": "^15.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
