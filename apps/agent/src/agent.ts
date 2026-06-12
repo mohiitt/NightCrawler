@@ -23,6 +23,7 @@ import {
 } from "@nightcrawler/contracts";
 import { type Run, pushEvent } from "./store.js";
 import { publishCitations } from "./publisher.js";
+import { postApprovalRequest, pollGuildApproval } from "./guild.js";
 
 const openai = observeOpenAI(
   new OpenAI({ apiKey: process.env["OPENAI_API_KEY"] }),
@@ -367,19 +368,39 @@ export async function runAgent(run: Run): Promise<void> {
   // ── Guild approval gate ──────────────────────────────────────────────────
   run.status = "awaiting_approval";
   const approvalRef = `guild-${run.id.slice(0, 8)}`;
+  const approvalReason = `NIGHTCRAWLER intends to publish market-moving intelligence (confidence: ${(synthesizedSignal.confidence * 100).toFixed(0)}%). Verify Langfuse trace confirms no hallucination and Mosaic Theory compliance.`;
+
   pushEvent(run, {
     type: "approval_required",
-    payload: {
-      runId: run.id,
-      reason: `NIGHTCRAWLER intends to publish market-moving intelligence (confidence: ${(synthesizedSignal.confidence * 100).toFixed(0)}%). Verify Langfuse trace confirms no hallucination and Mosaic Theory compliance.`,
-      approvalRef,
-    },
+    payload: { runId: run.id, reason: approvalReason, approvalRef },
   });
 
   console.log(`[agent] ⏸  Awaiting approval. Call POST /api/approve { runId: "${run.id}" } to continue.`);
   console.log(`[agent] 🔍 Langfuse: https://cloud.langfuse.com`);
 
-  await run.approvalPromise;
+  // Post approval request to Guild platform — either the Guild dashboard
+  // OR the local POST /api/approve endpoint can unblock the gate.
+  const tickers = synthesizedSignal.alpha.tickers
+    .map((t) => `${t.direction} ${t.ticker}`)
+    .join(", ");
+
+  const guildSessionId = await postApprovalRequest(run.id, approvalReason, {
+    thesis: synthesizedSignal.thesis,
+    confidence: synthesizedSignal.confidence,
+    tickers,
+  });
+
+  if (guildSessionId) {
+    // Race: whichever arrives first (Guild dashboard or local /api/approve) wins.
+    await Promise.race([
+      run.approvalPromise,
+      pollGuildApproval(guildSessionId),
+    ]);
+  } else {
+    // Guild unavailable — fall back to local approval only.
+    await run.approvalPromise;
+  }
+
   console.log("[agent] ✅ Approved. Publishing citations...");
 
   // ── Publish to cited.md via Composio ────────────────────────────────────
